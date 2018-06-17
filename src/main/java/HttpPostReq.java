@@ -13,7 +13,7 @@ import java.nio.charset.Charset;
 
 public class HttpPostReq {
     public static void main(String args[]) {
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 10000; i++) {
             Thread t = new Thread(new ClientConnexion());
             t.start();
         }

@@ -22,7 +22,7 @@ public class ClientConnexion implements Runnable {
 
     public ClientConnexion() {
         name += ++count;
-        restUrl = "http://localhost:8080/";
+        restUrl = "http://localhost:8090/data";
         username = "myusername";
         password = "mypassword";
 
@@ -45,13 +45,15 @@ public class ClientConnexion implements Runnable {
 
         int ville = randInt(1, 500);
 
-        // set Json object
+
         data.put("datatype", "temperature");
         data.put("value", String.valueOf(randInt(-30, 45)));
+        user.put("data", data); // set Json object
         user.put("location", "ville" + String.valueOf(ville));
-        user.put("deviceID", String.valueOf(ville));
-        user.put("data", data);
-        jsonData = user.toString();
+        user.put("deviceID", ville);
+
+        jsonData = user.toJSONString();
+        System.out.println("ok");
 
 
         //envoie de la requete en post
