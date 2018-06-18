@@ -1,64 +1,54 @@
 import org.apache.http.client.methods.HttpPost;
 import org.json.simple.JSONObject;
 
-import java.io.BufferedInputStream;
-import java.io.PrintWriter;
-import java.net.Socket;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ClientConnexion implements Runnable {
 
-    //Notre liste de commandes. Le serveur nous répondra différemment selon la commande utilisée.
-    private static int count = 0;
-    private Socket connexion = null;
-    private PrintWriter writer = null;
-    private BufferedInputStream reader = null;
-    private String commamd = "";
-    private String restUrl = null;
-    private String username = null;
-    private String password = null;
-    private String jsonData = null;
-    private String name = "Client-";
+    private static final long runningTimeS = 300L;
+    private static final long sendIntervalInfo = 15L;
+    private String restUrl;
+    private String username;
+    private String password;
 
-    public ClientConnexion() {
-        name += ++count;
+    ClientConnexion() {
         restUrl = "http://localhost:8090/data";
         username = "myusername";
         password = "mypassword";
 
     }
 
-    public static int randInt(int min, int max) {
+    private static int randInt(int min, int max) {
 
 
         // nextInt is normally exclusive of the top value,
         // so add 1 to make it inclusive
-        int randomNum = ThreadLocalRandom.current().nextInt(min, max + 1);
 
-        return randomNum;
+        return ThreadLocalRandom.current().nextInt(min, max + 1);
     }
 
+    @SuppressWarnings("unchecked")
     public void run() {
-
-        JSONObject user = new JSONObject();
-        JSONObject data = new JSONObject();
-
-        int ville = randInt(1, 500);
-
-
-        data.put("datatype", "temperature");
-        data.put("value", String.valueOf(randInt(-30, 45)));
-        user.put("data", data); // set Json object
-        user.put("location", "ville" + String.valueOf(ville));
-        user.put("deviceID", ville);
-
-        jsonData = user.toJSONString();
-        System.out.println("ok");
-
-
-        //envoie de la requete en post
-        HttpPostReq httpPostReq = new HttpPostReq();
-        HttpPost httpPost = httpPostReq.createConnectivity(restUrl, username, password);
-        httpPostReq.executeReq(jsonData, httpPost);
+        Long startTime = System.nanoTime();
+        do {
+            JSONObject user = new JSONObject();
+            JSONObject data = new JSONObject();
+            int ville = randInt(1, 500);
+            data.put("datatype", "temperature");
+            data.put("value", String.valueOf(randInt(-30, 45)));
+            user.put("data", data); // set Json object
+            user.put("location", "ville" + String.valueOf(ville));
+            user.put("deviceID", ville);
+            String jsonData = user.toJSONString();
+            //envoi de la requete en post
+            HttpPostReq httpPostReq = new HttpPostReq();
+            HttpPost httpPost = httpPostReq.createConnectivity(restUrl, username, password);
+            httpPostReq.executeReq(jsonData, httpPost);
+            try {
+                Thread.sleep(sendIntervalInfo * 1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } while (((System.nanoTime() - startTime) / 1000000000.0f) < runningTimeS);
     }
 }

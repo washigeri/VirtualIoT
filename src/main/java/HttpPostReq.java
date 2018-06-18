@@ -21,7 +21,7 @@ public class HttpPostReq {
 
     HttpPost createConnectivity(String restUrl, String username, String password) {
         HttpPost post = new HttpPost(restUrl);
-        String auth = new StringBuffer(username).append(":").append(password).toString();
+        String auth = username + ":" + password;
         byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII")));
         String authHeader = "Basic " + new String(encodedAuth);
         post.setHeader("AUTHORIZATION", authHeader);
@@ -45,10 +45,10 @@ public class HttpPostReq {
         }
     }
 
-    void executeHttpRequest(String jsonData, HttpPost httpPost) throws UnsupportedEncodingException, IOException {
-        HttpResponse response = null;
-        String line = "";
-        StringBuffer result = new StringBuffer();
+    private void executeHttpRequest(String jsonData, HttpPost httpPost) throws IOException {
+        HttpResponse response;
+        String line;
+        StringBuilder result = new StringBuilder();
         httpPost.setEntity(new StringEntity(jsonData));
         HttpClient client = HttpClientBuilder.create().build();
         response = client.execute(httpPost);
