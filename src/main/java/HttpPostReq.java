@@ -11,7 +11,15 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
+/**
+ * Classe gérant la connexion HTTP à proprement parler
+ */
 public class HttpPostReq {
+    /**
+     * Méthode main
+     *
+     * @param args Paramètres de la ligne de commande. Inutilisés.
+     */
     public static void main(String args[]) {
         for (int i = 0; i < 10; i++) {
             Thread t = new Thread(new ClientConnexion());

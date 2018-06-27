@@ -3,6 +3,9 @@ import org.json.simple.JSONObject;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Classe représentant la connexion au serveur (Cloud ou Fog)
+ */
 public class ClientConnexion implements Runnable {
 
     private static final long runningTimeS = 300L;
@@ -11,6 +14,9 @@ public class ClientConnexion implements Runnable {
     private String username;
     private String password;
 
+    /**
+     * Constructeur de la classe. Changer resURL par l'url du serveur visé.
+     */
     ClientConnexion() {
         restUrl = "http://localhost:8090/data";
         username = "myusername";
@@ -18,6 +24,13 @@ public class ClientConnexion implements Runnable {
 
     }
 
+    /**
+     * Génère un entier aléatoirement.
+     *
+     * @param min Borne inférieure (incluse)
+     * @param max Borne supérieure (incluse)
+     * @return nombre aléatoire
+     */
     private static int randInt(int min, int max) {
 
 
@@ -28,9 +41,13 @@ public class ClientConnexion implements Runnable {
     }
 
     @SuppressWarnings("unchecked")
+    /**
+     * Envoi de la requête au serveur
+     */
     public void run() {
         Long startTime = System.nanoTime();
         do {
+            //Crée les données JSON à envoyer
             JSONObject user = new JSONObject();
             JSONObject data = new JSONObject();
             int ville = randInt(1, 500);
@@ -49,6 +66,7 @@ public class ClientConnexion implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        } while (((System.nanoTime() - startTime) / 1000000000.0f) < runningTimeS);
+        }
+        while (((System.nanoTime() - startTime) / 1000000000.0f) < runningTimeS); //On envoie tant qu'on a pas dépassé le temps maximal d'execution
     }
 }
